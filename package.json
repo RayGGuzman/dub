@@ -2,6 +2,10 @@
   "name": "dub-monorepo",
   "private": true,
   "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": "23.x",
+    "pnpm": ">=9.15.9"
+  },
   "scripts": {
     "build": "turbo build",
     "build:packages": "pnpm -r --filter \"./packages/**\" build",
