@@ -2,6 +2,10 @@
   "name": "web",
   "private": true,
   "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": "23.x",
+    "pnpm": ">=9.15.9"
+  },
   "scripts": {
     "dev": "concurrently --kill-others \"pnpm prisma:generate && next dev --turbopack --port 8888\" \"pnpm prisma:generate && pnpm prisma:studio --browser none\"",
     "build": "pnpm prisma:generate && next build",
