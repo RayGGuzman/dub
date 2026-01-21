@@ -9,9 +9,6 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json ./
 COPY packages/ ./packages/
 COPY apps/ ./apps/
 
-# Prisma (ajusta según tu estructura)
-COPY packages/db/prisma ./packages/db/prisma
-
 RUN pnpm install --frozen-lockfile
 
 RUN cd apps/web && pnpm prisma:generate
