@@ -1,28 +1,23 @@
-FROM node:24-alpine  
-  
-WORKDIR /app  
-  
-# Instalar pnpm  
-RUN npm install -g pnpm@9.15.9  
-  
-# Copiar archivos de configuración del workspace  
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json ./  
-  
-# Copiar todos los paquetes del workspace  
-COPY packages/ ./packages/  
-COPY apps/ ./apps/  
-  
-# Instalar dependencias del workspace  
-RUN pnpm install --frozen-lockfile  
-  
-# Generar cliente de Prisma (desde apps/web)  
-RUN cd apps/web && pnpm prisma:generate  
-  
-# Construir todo el monorepo  
-RUN pnpm build  
-  
-# Exponer puerto de la aplicación  
-EXPOSE 3000  
-  
-# Comando de inicio  
-CMD ["pnpm", "start"]
+FROM node:24-alpine
+
+WORKDIR /app
+
+RUN npm install -g pnpm@9.15.9
+
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml turbo.json ./
+
+COPY packages/ ./packages/
+COPY apps/ ./apps/
+
+# Prisma (ajusta según tu estructura)
+COPY packages/db/prisma ./packages/db/prisma
+
+RUN pnpm install --frozen-lockfile
+
+RUN cd apps/web && pnpm prisma:generate
+
+RUN turbo run build --filter=web
+
+EXPOSE 3000
+
+CMD ["pnpm", "--filter", "web", "start"]
