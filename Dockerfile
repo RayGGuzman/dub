@@ -13,7 +13,7 @@ RUN pnpm install --frozen-lockfile
 
 RUN cd apps/web && pnpm prisma:generate
 
-RUN turbo run build --filter=web
+RUN pnpm turbo run build --filter=web
 
 EXPOSE 3000
 
