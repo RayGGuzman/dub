@@ -15,8 +15,8 @@ COPY apps/ ./apps/
 # Instalar dependencias del workspace  
 RUN pnpm install --frozen-lockfile  
   
-# Generar cliente de Prisma  
-RUN pnpm prisma:generate  
+# Generar cliente de Prisma (desde apps/web)  
+RUN cd apps/web && pnpm prisma:generate  
   
 # Construir todo el monorepo  
 RUN pnpm build  
