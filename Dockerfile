@@ -19,9 +19,24 @@ RUN pnpm install --frozen-lockfile
 # Generate Prisma client
 RUN pnpm --filter=@dub/prisma generate
 
-# Build all packages and the web app with increased heap
+# Build with increased heap
 ENV NODE_OPTIONS=--max-old-space-size=4096
+
+# First build all dependencies
 RUN pnpm build
+
+# Then explicitly build the web app
+RUN pnpm --filter=web build
+
+# Verify .next was created in builder stage
+RUN if [ ! -d "apps/web/.next" ]; then \
+  echo "ERROR: .next directory not found after build!"; \
+  ls -la apps/web/; \
+  exit 1; \
+fi
+
+# Show what's in .next for debugging
+RUN echo "✓ .next directory found" && ls -la apps/web/.next | head -20
 
 # Runtime stage
 FROM node:20-alpine
