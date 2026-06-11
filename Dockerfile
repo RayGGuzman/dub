@@ -6,8 +6,10 @@ RUN npm install -g pnpm@9.15.9
 
 WORKDIR /app
 
-# Copy workspace configuration
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+# Copy workspace configuration and root config files
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json turbo.json ./
+COPY .npmrc* ./
+COPY prettier.config.js ./
 COPY packages ./packages
 COPY apps ./apps
 
