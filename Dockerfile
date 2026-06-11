@@ -31,21 +31,11 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm@9.15.9
 
-# Copy pnpm files
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
-COPY packages ./packages
-COPY apps/web ./apps/web
+# Copy EVERYTHING from builder
+COPY --from=builder /app ./
 
-# Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built app and packages from builder
-COPY --from=builder /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/packages ./packages
-
-# Clean up unused files
-RUN rm -rf apps/web/.next/cache apps/web/public/videos
+# Verify .next directory exists
+RUN if [ ! -d "apps/web/.next" ]; then echo "ERROR: .next directory not found!"; exit 1; fi
 
 # Set environment to production
 ENV NODE_ENV=production
@@ -55,6 +45,6 @@ ENV NODE_OPTIONS=--max-old-space-size=2048
 # Expose port
 EXPOSE 3000
 
-# Start the web app
+# Start the web app using npm script
 WORKDIR /app/apps/web
-CMD ["node_modules/.bin/next", "start", "-p", "3000"]
+CMD ["pnpm", "start"]
